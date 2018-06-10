@@ -21,7 +21,11 @@ class RegisterController extends Controller
     |
     */
 
-    use RegistersUsers;
+    //use RegistersUsers;
+
+    use RegistersUsers {
+        registered as frameworkRegistered;
+    }
 
     /**
      * Where to redirect users after registration.
@@ -68,5 +72,12 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+    }  
+
+    protected function registered(Request $request, $user)
+    {
+        $user->generateToken();
+
+        return response()->json(['data' => $user->toArray()], 201);
     }
 }
